@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="../scr/bank.png" />
+    <link rel="canonical" href="https://bank.hug-oh.com/login/" />
+    <meta name="description" content="Hug-Bank! • Inicia sesión o regístrate para acceder a tu banca online. Gestiona tus finanzas de forma segura y rápida. ¡Únete a Hug-Bank!">
+    <title>Hug-Bank! • Iniciar Sesión</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="min-h-screen flex items-start justify-center p-2 sm:p-4 md:p-8 bg-gradient-to-br from-blue-100 to-blue-300 w-full">
+
+    <div id="app" class="w-full max-w-md sm:max-w-lg md:max-w-xl">
+        
+        <div id="auth-view" class="bg-card p-4 sm:p-6 md:p-8 w-full sm:max-w-md mx-auto mt-4 sm:mt-8 md:mt-12">
+            <div class="flex items-center gap-2 mb-4">
+                <img src="../scr/bank.png" class="h-10 sm:h-12 md:h-14 w-auto"> 
+                <h2 class="text-xl sm:text-2xl md:text-3xl font-bold" id="auth-heading">Iniciar Sesión</h2>
+            </div>
+            <form id="auth-form" class="space-y-3 sm:space-y-4">
+                
+                <div id="name-field" class="hidden">
+                    <label for="name" class="block text-xs sm:text-sm font-medium">Nombre</label>
+                    <input type="text" id="name" name="name" class="mt-1 block w-full px-2 sm:px-3 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500 text-sm sm:text-base">
+                </div>
+                
+                <div id="dob-field" class="hidden">
+                    <label for="dob" class="block text-xs sm:text-sm font-medium">Fecha de Nacimiento</label>
+                    <input type="date" id="dob" name="dob" class="mt-1 block w-full px-2 sm:px-3 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500 text-sm sm:text-base">
+                    <p class="text-xs text-gray-600 mt-1">Si eres menor de edad, no afectará la experiencia.</p>
+                </div>
+                
+                <div>
+                    <label for="email" class="block text-xs sm:text-sm font-medium">Correo Electrónico</label>
+                    <input type="email" id="email" name="email" required class="mt-1 block w-full px-2 sm:px-3 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500 text-sm sm:text-base">
+                </div>
+                
+                <div>
+                    <label for="password" class="block text-xs sm:text-sm font-medium">Contraseña</label>
+                    
+                    <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                        <input type="password" id="password" name="password" required class="mt-1 block w-full px-2 sm:px-3 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500 text-sm sm:text-base">
+                        
+                        <button type="button" id="toggle-requirements" class="mt-1 sm:mt-1 flex-shrink-0 px-2 sm:px-3 py-2 bg-gray-200 text-gray-700 text-xs font-medium rounded-lg hover:bg-gray-300 transition-colors hidden whitespace-nowrap">
+                            Ver Requisitos
+                        </button>
+                    </div>
+                    
+                    <div id="password-requirements" class="mt-2 text-xs text-gray-600 password-req-list space-y-0.5 hidden">
+                        <p id="req-length" class="text-red-500 flex items-center">
+                            <span class="mr-1">❌</span> <span>Mínimo 8 / Máximo 36 caracteres</span>
+                        </p>
+                        <p id="req-uppercase" class="text-red-500 flex items-center">
+                            <span class="mr-1">❌</span> <span>Una letra mayúscula</span>
+                        </p>
+                        <p id="req-lowercase" class="text-red-500 flex items-center">
+                            <span class="mr-1">❌</span> <span>Una letra minúscula</span>
+                        </p>
+                        <p id="req-number" class="text-red-500 flex items-center">
+                            <span class="mr-1">❌</span> <span>Un número</span>
+                        </p>
+                        <p id="req-special" class="text-red-500 flex items-center">
+                            <span class="mr-1">❌</span> <span>Un carácter especial (!@#$...)</span>
+                        </p>
+                    </div>
+                </div>
+
+                <div id="confirm-password-field" class="hidden">
+                    <label for="confirm-password" class="block text-xs sm:text-sm font-medium">Confirmar Contraseña</label>
+                    <input type="password" id="confirm-password" name="confirm-password" class="mt-1 block w-full px-2 sm:px-3 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500 text-sm sm:text-base">
+                </div>
+                
+                <div id="terms-checkbox-field" class="hidden">
+                    <div class="flex items-start gap-2">
+                        <input type="checkbox" id="accept-terms" name="accept-terms" class="mt-1 h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 flex-shrink-0">
+                        <label for="accept-terms" class="block text-xs sm:text-sm text-gray-700">
+                            Acepto los <a href="https://bank.hug-oh.com/Terminos_y_Condiciones_HugBank.pdf" target="_blank" class="text-blue-500 hover:text-blue-700 font-medium">Términos y Condiciones</a>
+                        </label>
+                    </div>
+                </div>
+                <div class="text-right mt-1" id="forgot-password-container">
+                    <button type="button" id="forgot-password" class="text-xs text-blue-500 hover:text-blue-700 focus:outline-none">
+                        ¿Olvidaste tu contraseña?
+                    </button>
+                </div>
+                
+                <button type="submit" id="auth-button" class="w-full py-2.5 sm:py-3 px-4 rounded-full text-base sm:text-lg font-semibold text-white btn-primary">
+                    Iniciar Sesión
+                </button>
+                
+                <button type="button" id="google-auth-button" class="w-full py-2.5 sm:py-3 px-4 rounded-full text-sm sm:text-base font-semibold text-gray-700 border-2 border-gray-300 bg-white hover:bg-gray-100 transition-colors flex items-center justify-center gap-2 mt-2 sm:mt-3">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/48px-Google_%22G%22_logo.svg.png" alt="Google logo" class="h-5 w-5 sm:h-6 sm:w-6">
+                    <span class="hidden sm:inline">Iniciar Sesión con Google</span>
+                    <span class="sm:hidden">Google</span>
+                </button>
+                </form>
+            <div class="text-center mt-3 sm:mt-4">
+                <button id="toggle-auth" class="text-xs sm:text-sm text-blue-600 hover:text-blue-800 focus:outline-none">
+                    ¿No tienes cuenta? Regístrate aquí.
+                </button>
+            </div>
+        </div>
+
+        <div id="verification-view" class="bg-card p-4 sm:p-6 md:p-8 w-full sm:max-w-md mx-auto mt-4 sm:mt-8 md:mt-12 text-center hidden">
+            <h3 class="text-lg sm:text-xl md:text-2xl font-bold mb-3 sm:mb-4 text-blue-600">📧 ¡Verifica tu Correo Electrónico!</h3>
+            <p class="mb-4 sm:mb-6 text-sm sm:text-base text-gray-700">
+                Hemos enviado un enlace de verificación a tu correo. Por favor, revisa tu bandeja de entrada y haz clic en el enlace para activar tu cuenta.
+            </p>
+            <p class="mb-6 sm:mb-8 font-semibold text-xs sm:text-sm">
+                **Recuerda: Si ya verificaste, haz clic en el botón de abajo.**
+            </p>
+            <button id="verification-reload-button" class="w-full py-2.5 sm:py-3 px-4 rounded-full text-base sm:text-lg font-semibold text-white btn-primary">
+                Correo Verificado
+            </button>
+        </div>
+        
+        <div id="confirm-extra-view" class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-2 sm:p-4"> 
+            
+            <div class="bg-card p-4 sm:p-6 md:p-8 w-full sm:max-w-md mx-auto text-left">
+                
+                <div class="flex items-center gap-2 mb-4">
+                    <img src="../scr/bank.png" class="h-10 sm:h-12 md:h-14 w-auto"> 
+                    <h2 class="text-xl sm:text-2xl md:text-3xl font-bold">Confirma tu Información</h2>
+                </div>
+                
+                <p class="mb-3 text-sm text-gray-700">Hemos detectado que falta tu nombre o fecha de nacimiento. Por favor confirma los datos para completar tu registro.</p>
+                
+                <form id="confirm-extra-form" class="space-y-3 sm:space-y-4">
+                    
+                    <div>
+                        <label for="confirm-name" class="block text-xs sm:text-sm font-medium">Nombre</label>
+                        <input type="text" id="confirm-name" class="mt-1 block w-full px-2 sm:px-3 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500 text-sm sm:text-base">
+                    </div>
+                    
+                    <div>
+                        <label for="confirm-dob" class="block text-xs sm:text-sm font-medium">Fecha de Nacimiento</label>
+                        <input type="date" id="confirm-dob" class="mt-1 block w-full px-2 sm:px-3 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500 text-sm sm:text-base">
+                        <p class="text-xs text-gray-600 mt-1">Si eres menor de edad, no afectará la experiencia.</p>
+                    </div>
+                    
+                    <div>
+                        <label for="confirm-password-extra" class="block text-xs sm:text-sm font-medium">Contraseña (Para inicio de sesión con correo)</label>
+                        
+                        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                             <input type="password" id="confirm-password-extra" class="mt-1 block w-full px-2 sm:px-3 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500 text-sm sm:text-base">
+                            
+                            <button type="button" id="toggle-confirm-requirements" class="mt-1 sm:mt-1 flex-shrink-0 px-2 sm:px-3 py-2 bg-gray-200 text-gray-700 text-xs font-medium rounded-lg hover:bg-gray-300 transition-colors whitespace-nowrap">
+                                Ver Requisitos
+                            </button>
+                        </div>
+                        
+                        <div id="confirm-password-requirements" class="mt-2 text-xs text-gray-600 password-req-list space-y-0.5 hidden">
+                            <p id="confirm-req-length" class="text-red-500 flex items-center">
+                                <span class="mr-1">❌</span> <span>Mínimo 8 / Máximo 36 caracteres</span>
+                            </p>
+                            <p id="confirm-req-uppercase" class="text-red-500 flex items-center">
+                                <span class="mr-1">❌</span> <span>Una letra mayúscula</span>
+                            </p>
+                            <p id="confirm-req-lowercase" class="text-red-500 flex items-center">
+                                <span class="mr-1">❌</span> <span>Una letra minúscula</span>
+                            </p>
+                            <p id="confirm-req-number" class="text-red-500 flex items-center">
+                                <span class="mr-1">❌</span> <span>Un número</span>
+                            </p>
+                            <p id="confirm-req-special" class="text-red-500 flex items-center">
+                                <span class="mr-1">❌</span> <span>Un carácter especial (!@#$...)</span>
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label for="confirm-password-extra-2" class="block text-xs sm:text-sm font-medium">Confirmar Contraseña</label>
+                        <input type="password" id="confirm-password-extra-2" class="mt-1 block w-full px-2 sm:px-3 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500 text-sm sm:text-base">
+                    </div>
+                    
+                    <div class="mt-3">
+                        <div class="flex items-start gap-2">
+                            <input type="checkbox" id="confirm-accept-terms" name="confirm-accept-terms" class="mt-1 h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 flex-shrink-0">
+                            <label for="confirm-accept-terms" class="block text-xs sm:text-sm text-gray-700">
+                                Acepto los <a href="https://bank.hug-oh.com/Terminos_y_Condiciones_HugBank.pdf" target="_blank" class="text-blue-500 hover:text-blue-700 font-medium">Términos y Condiciones</a>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="pt-4 flex gap-2">
+                        <button id="confirm-extra-button" type="button" class="w-1/2 py-2 px-3 rounded-full text-white btn-primary">Confirmar</button>
+                        <button id="cancel-confirm-extra-button" type="button" class="w-1/2 py-2 px-3 rounded-full text-gray-700 border-2 border-gray-300 bg-white hover:bg-gray-100">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div id="message-box" class="mt-4 p-4 rounded-lg text-sm hidden" role="alert"></div>
+
+    </div>
+    
+    <script type="module" src="script.js"></script>
+    <!-- Modal de ingreso de PIN para inicio vía QR/Enlace -->
+    <div id="pin-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
+        <div class="bg-card p-4 sm:p-6 md:p-8 w-full sm:max-w-md mx-auto text-left rounded-lg">
+            <h3 class="text-lg font-bold mb-2">Ingresa tu PIN</h3>
+            <p class="text-sm text-gray-600 mb-4">Por favor introduce tu PIN de 4 dígitos para autorizar el inicio de sesión.</p>
+            <input id="pin-input" type="password" inputmode="numeric" pattern="\\d*" maxlength="4" placeholder="••••"
+                   class="w-full px-3 py-2 border rounded-lg text-center text-xl tracking-widest mb-4" />
+            <div class="flex gap-3">
+                <button id="pin-modal-cancel" class="flex-1 py-2 px-3 rounded-full text-md font-semibold btn-secondary">Cancelar</button>
+                <button id="pin-modal-confirm" class="flex-1 py-2 px-3 rounded-full text-md font-semibold btn-primary">Confirmar</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

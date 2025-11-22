@@ -1,0 +1,76 @@
+:root {
+            --hug-primary: #007bff;
+            --hug-secondary: #f3f4f6;
+            --hug-text-color: #1f2937;
+            --hug-header: #3b82f6;
+            --hug-danger: #dc3545;
+        }
+        body {
+            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacs, sans-serif;
+            background-color: var(--hug-secondary);
+            color: var(--hug-text-color);
+        }
+        .bg-card {
+            background-color: #ffffff;
+            border-radius: 1rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        .btn-primary {
+            background-color: var(--hug-primary);
+            transition: background-color 0.2s ease-in-out;
+        }
+        .btn-primary:hover {
+            background-color: #2563eb;
+        }
+        .btn-danger {
+            background-color: var(--hug-danger);
+            transition: background-color 0.2s ease-in-out;
+        }
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+        .product-card {
+             cursor: pointer;
+             transition: all 0.2s ease;
+             border: 2px solid transparent;
+        }
+        .product-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-color: var(--hug-primary);
+        }
+        input[type="text"][id="product-emoji"], input[type="text"][id="edit-product-emoji"] {
+            font-size: 1.5rem;
+            text-align: center;
+        }
+        
+        /* Estilo para las opciones múltiples (Radio Buttons) */
+        .radio-option {
+            display: none;
+        }
+        .rounded-full {
+            border-radius: 50%; /* Asegura que sea 100% circular */
+            width: 2.5rem;   /* Por ejemplo, 40px */
+            height: 2.5rem;  /* Debe ser igual al ancho */
+            display: flex; /* Para centrar el ícono */
+            align-items: center; /* Centrado vertical */
+            justify-content: center; /* Centrado horizontal */
+            padding: 0; /* Eliminar padding para que el tamaño sea preciso */
+        }
+        .radio-label {
+            display: block;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid #e5e7eb;
+            font-weight: 600;
+        }
+        .radio-label:hover {
+            border-color: #93c5fd; /* blue-300 */
+        }
+        .radio-option:checked + .radio-label {
+            background-color: #eff6ff; /* blue-50 */
+            border-color: var(--hug-primary); /* blue-500 */
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+        }

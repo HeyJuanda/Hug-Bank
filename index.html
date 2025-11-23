@@ -12,6 +12,80 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
     <link rel="stylesheet" href="style.css">
+        <!-- button-animations-start -->
+        <style>
+        /* Animaciones para botones - inicio */
+        .btn-primary, .btn-secondary, button {
+            position: relative;
+            overflow: hidden;
+            transition: transform .18s cubic-bezier(.2,.8,.2,1), box-shadow .18s;
+            will-change: transform;
+        }
+        .btn-primary:hover, .btn-secondary:hover, button:hover {
+            transform: translateY(-3px) scale(1.01);
+            box-shadow: 0 8px 20px rgba(0,0,0,.12);
+        }
+        .btn-primary:active, .btn-secondary:active, button:active {
+            transform: translateY(0) scale(.995);
+            box-shadow: 0 4px 12px rgba(0,0,0,.08);
+        }
+        /* Focus ring */
+        button:focus {
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(59,130,246,.12);
+        }
+
+        /* Ripple */
+        .btn-ripple {
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-ripple .ripple {
+            position: absolute;
+            border-radius: 50%;
+            transform: scale(0);
+            animation: ripple 600ms linear;
+            background-color: rgba(255,255,255,0.6);
+            pointer-events: none;
+        }
+        @keyframes ripple {
+            to { transform: scale(4); opacity: 0; }
+        }
+        /* Subtle icon bounce for .inline-6 images */
+        .inline-6:active { transform: translateY(1px) scale(.98); }
+        /* Make rounded full buttons appear smoother */
+        .rounded-full { transition: transform .18s, box-shadow .18s; }
+        /* Animación cuando la ventana se hace más alta (suavizada) */
+        #app.viewport-expand-anim {
+            animation: viewportExpand 600ms cubic-bezier(.22,.9,.3,1) both;
+            transform-origin: top center;
+            will-change: transform, opacity;
+        }
+        @keyframes viewportExpand {
+            from { transform: translateY(-6px) scaleY(.997); opacity: .98; }
+            50%  { transform: translateY(-2px) scaleY(.9985); opacity: .995; }
+            to   { transform: translateY(0) scaleY(1); opacity: 1; }
+        }
+        /* Hover/Focus effect para el saldo */
+        #balance-display {
+            display: inline-block;
+            transition: transform 260ms cubic-bezier(.22,.9,.3,1),
+                        text-shadow 260ms ease, color 260ms ease, filter 260ms ease;
+            will-change: transform, text-shadow, filter;
+        }
+        #balance-display:hover, #balance-display:focus, #balance-display:focus-visible {
+            transform: scale(1.08);
+            color: #0ea5e9; /* ligero tintado azul */
+            text-shadow: 0 10px 30px rgba(14,165,233,0.18), 0 2px 8px rgba(0,0,0,0.06);
+            filter: drop-shadow(0 10px 24px rgba(14,165,233,0.12));
+        }
+        /* Reducción de movimiento para usuarios que la prefieren */
+        @media (prefers-reduced-motion: reduce) {
+            #balance-display { transition: none; transform: none; text-shadow: none; filter: none; }
+        }
+        /* End marker */
+        </style>
+        <!-- button-animations-end -->
 </head>
 <body class="min-h-screen flex items-start justify-center p-4 md:p-8">
 
@@ -215,5 +289,52 @@
     <!-- QR generator library (client-side) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script type="module" link="module" src="script.js"></script>
+        <!-- button-animations-script-start -->
+        <script>
+        (function(){
+            // Añade efecto ripple a botones
+            function createRipple(e){
+                const btn = e.currentTarget;
+                const rect = btn.getBoundingClientRect();
+                const ripple = document.createElement('span');
+                ripple.className = 'ripple';
+                const size = Math.max(rect.width, rect.height);
+                ripple.style.width = ripple.style.height = size + 'px';
+                ripple.style.left = (e.clientX - rect.left - size/2) + 'px';
+                ripple.style.top = (e.clientY - rect.top - size/2) + 'px';
+                btn.appendChild(ripple);
+                setTimeout(()=> ripple.remove(), 700);
+            }
+            // select buttons to apply ripple: all visible buttons, plus elements with role=button
+            const buttons = Array.from(document.querySelectorAll('button, [role="button"], .btn-primary, .btn-secondary'));
+            buttons.forEach(b=>{
+                b.classList.add('btn-ripple');
+                b.addEventListener('click', createRipple);
+            });
+            // Detecta aumento de altura de la ventana y aplica animación (más suave)
+            let lastInnerHeight = window.innerHeight;
+            let resizeTimer = null;
+            window.addEventListener('resize', function(){
+                const newH = window.innerHeight;
+                // Umbral más pequeño para reactividad pero evitamos micro cambios
+                const THRESHOLD = 20;
+                if (newH > lastInnerHeight + THRESHOLD) {
+                    const app = document.getElementById('app');
+                    if (app) {
+                        // Reaplicar clase de forma segura y más lenta
+                        app.classList.remove('viewport-expand-anim');
+                        void app.offsetWidth; // reflow
+                        app.classList.add('viewport-expand-anim');
+                        // Mantener la clase hasta que termine la animación
+                        setTimeout(()=> app.classList.remove('viewport-expand-anim'), 700);
+                    }
+                }
+                // Actualiza lastInnerHeight con debounce para evitar flapping
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(()=> { lastInnerHeight = window.innerHeight; }, 240);
+            });
+        })();
+        </script>
+        <!-- button-animations-script-end -->
 </body>
 </html>

@@ -1,0 +1,54 @@
+  :root {
+            --hug-primary: #007bff;
+            --hug-text-color: #1f2937;
+            --hug-header: #3b82f6;
+        }
+
+        body {
+            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacs, sans-serif;
+            color: var(--hug-text-color);
+        }
+        .bg-card {
+            background-color: #ffffff;
+            border-radius: 1rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        .btn-primary {
+            background-color: var(--hug-primary);
+            transition: background-color 0.2s ease-in-out;
+        }
+        .btn-primary:hover {
+            background-color: #2563eb; /* Blue-600 */
+        }
+        .btn-secondary {
+            background-color: #e5e7eb; /* Gray-200 */
+            color: var(--hug-text-color);
+            transition: background-color 0.2s ease-in-out;
+        }
+        .btn-secondary:hover {
+            background-color: #d1d5db;
+        }
+        .transaction-item:hover {
+            background-color: #f7f9fb;
+        }
+        .header-bar {
+            background-color: var(--hug-header);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 0.75rem 0.75rem 0 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .password-req-list > p {
+            margin-bottom: 0.25rem !important;
+        }
+        
+        /* Modificamos el estilo del contenedor del modal para usar clases de Tailwind */
+        #confirm-extra-view {
+            position: fixed; 
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); 
+            z-index: 50; 
+        }

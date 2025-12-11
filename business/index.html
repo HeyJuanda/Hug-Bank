@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="../scr/bank.png" />
+    <link rel="canonical" href="https://bank.hug-oh.com/business/" />
+    <meta name="description" content="Hug-Bank! • Plataforma de negocios para gestionar ventas, productos y estadísticas. Optimiza tu negocio con nuestro sistema de punto de venta fácil de usar.">
+    <link rel="stylesheet" href="style.css">
+    <title>Hug-Bank! • Business</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+        <!-- button-animations-start -->
+        <style>
+        /* Animaciones para botones y elementos - copia desde Normal/index.html */
+        .btn-primary, .btn-secondary, button {
+            position: relative;
+            overflow: hidden;
+            transition: transform .18s cubic-bezier(.2,.8,.2,1), box-shadow .18s;
+            will-change: transform;
+        }
+        .btn-primary:hover, .btn-secondary:hover, button:hover {
+            transform: translateY(-3px) scale(1.01);
+            box-shadow: 0 8px 20px rgba(0,0,0,.12);
+        }
+        .btn-primary:active, .btn-secondary:active, button:active {
+            transform: translateY(0) scale(.995);
+            box-shadow: 0 4px 12px rgba(0,0,0,.08);
+        }
+        button:focus { outline: none; box-shadow: 0 0 0 4px rgba(59,130,246,.12); }
+
+        .btn-ripple { position: relative; overflow: hidden; }
+        .btn-ripple .ripple { position: absolute; border-radius: 50%; transform: scale(0); animation: ripple 600ms linear; background-color: rgba(255,255,255,0.6); pointer-events: none; }
+        @keyframes ripple { to { transform: scale(4); opacity: 0; } }
+
+        .inline-6:active, .inline\ h-5:active { transform: translateY(1px) scale(.98); }
+        .rounded-full { transition: transform .18s, box-shadow .18s; }
+
+        /* Animación cuando la ventana se hace más alta (suavizada) */
+        #app.viewport-expand-anim { animation: viewportExpand 600ms cubic-bezier(.22,.9,.3,1) both; transform-origin: top center; will-change: transform, opacity; }
+        @keyframes viewportExpand { from { transform: translateY(-6px) scaleY(.997); opacity: .98; } 50% { transform: translateY(-2px) scaleY(.9985); opacity: .995; } to { transform: translateY(0) scaleY(1); opacity: 1; } }
+
+        /* Hover/Focus effect para montos/saldos comunes en esta plantilla */
+        #display-current-balance, #display-charge-amount-confirm, #display-total-amount, #total-revenue-display, #display-charge-amount-payment-method, #display-charge-amount-login {
+                display: inline-block;
+                transition: transform 260ms cubic-bezier(.22,.9,.3,1), text-shadow 260ms ease, color 260ms ease, filter 260ms ease;
+                will-change: transform, text-shadow, filter;
+        }
+        #display-current-balance:hover, #display-current-balance:focus,
+        #display-charge-amount-confirm:hover, #display-charge-amount-confirm:focus,
+        #display-total-amount:hover, #display-total-amount:focus,
+        #total-revenue-display:hover, #total-revenue-display:focus,
+        #display-charge-amount-payment-method:hover, #display-charge-amount-payment-method:focus,
+        #display-charge-amount-login:hover, #display-charge-amount-login:focus {
+                transform: scale(1.06);
+                color: #0ea5e9;
+                text-shadow: 0 10px 30px rgba(14,165,233,0.14), 0 2px 8px rgba(0,0,0,0.05);
+                filter: drop-shadow(0 8px 20px rgba(14,165,233,0.10));
+        }
+        @media (prefers-reduced-motion: reduce) {
+                #display-current-balance, #display-charge-amount-confirm, #display-total-amount, #total-revenue-display, #display-charge-amount-payment-method, #display-charge-amount-login { transition: none; transform: none; text-shadow: none; filter: none; }
+        }
+        </style>
+        <!-- button-animations-end -->
+</head>
+<body class="min-h-screen flex items-center justify-center p-4 md:p-8">
+
+    <div id="app" class="w-full max-w-5xl">
+        
+        <div id="charge-setup" class="bg-card">
+                <div class="p-4 md:p-6 border-b flex justify-between items-center">
+                     <div>
+                        <h2 class="text-2xl font-bold text-hug-header">Punto de Venta</h2>
+                        <p class="text-sm">Bienvenido, <span id="business-name-display" class="font-bold"></span></p>
+                     </div>
+                     <div class="flex space-x-2">
+                        <button onclick="window.location.href='../'" class="py-1 px-3 rounded-full text-sm font-semibold text-white bg-blue-500 hover:bg-blue-700">
+                            <img src="../scr/trans.svg" alt="Export Icon" class="inline h-5 w-5 items-center">
+                        </button>
+                        <button id="toggle-statistics-btn" class="py-1 px-3 rounded-full text-sm font-semibold text-white bg-blue-500 hover:bg-blue-700">
+                            <img src="../scr/est.svg" alt="Export Icon" class="inline h-5 w-5 items-center">
+                        </button>
+                        <button id="business-logout-btn" class="py-1 px-3 rounded-full text-sm font-semibold text-white bg-gray-500 hover:bg-gray-700">
+                            <img src="../scr/offb.svg" alt="Export Icon" class="inline h-5 w-5 items-center">
+                        </button>
+                     </div>
+                </div>
+    
+                <div class="grid grid-cols-1 md:grid-cols-5 min-h-[500px]">
+                    
+                    <div class="md:col-span-3 p-4 md:p-6 border-r flex flex-col">
+                        <div id="dynamic-pos-panel" class="flex-grow flex flex-col relative">
+                            
+                            <div id="edit-product-modal" class="absolute inset-0 bg-white bg-opacity-95 z-20 p-6 md:p-8 hidden">
+                                <h3 class="text-2xl font-bold mb-6 text-center text-hug-header">Editar Producto</h3>
+                                <form id="edit-product-form" class="space-y-4 max-w-sm mx-auto bg-card p-6 shadow-xl">
+                                    <input type="hidden" id="edit-product-index">
+                                    
+                                    <div class="grid grid-cols-6 gap-3">
+                                         <div class="col-span-1">
+                                             <label for="edit-product-emoji" class="block text-sm font-medium">Emoji</label>
+                                             <input type="text" id="edit-product-emoji" maxlength="2" required
+                                                   class="mt-1 block w-full px-1 py-1 border rounded-lg focus:ring-blue-500 focus:border-blue-500 text-3xl text-center">
+                                         </div>
+                                         <div class="col-span-5">
+                                             <label for="edit-product-name" class="block text-sm font-medium">Nombre</label>
+                                             <input type="text" id="edit-product-name" required placeholder="Nombre del Producto"
+                                                   class="mt-1 block w-full px-3 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                                         </div>
+                                    </div>
+                                    
+                                    <div>
+                                         <label for="edit-product-price" class="block text-sm font-medium">Precio ($)</label>
+                                         <input type="number" id="edit-product-price" required min="0.01" step="0.01" placeholder="9.99"
+                                               class="mt-1 block w-full px-3 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                                    </div>
+    
+                          <div>
+                             <label for="edit-product-cost" class="block text-sm font-medium">Costo ($)</label>
+                             <input type="number" id="edit-product-cost" required min="0" step="0.01" placeholder="1.50"
+                                 class="mt-1 block w-full px-3 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                          </div>
+    
+                                    <button type="submit" class="w-full py-3 px-4 rounded-full text-lg font-semibold text-white btn-primary">
+                                        Guardar Cambios
+                                    </button>
+                                    <button type="button" id="cancel-edit-btn" class="w-full py-2 px-4 rounded-full text-sm font-semibold text-gray-700 bg-gray-200 hover:bg-gray-300">
+                                        Cancelar Edición
+                                    </button>
+                                </form>
+                            </div>
+                            <div id="product-catalog-view"> 
+                                <h3 class="text-xl font-semibold mb-3 flex justify-between items-center">
+                                    Catálogo de Productos
+                                    <button id="toggle-add-product-form-btn" class="text-white bg-green-500 hover:bg-green-600 rounded-full w-8 h-8 flex items-center justify-center text-2xl leading-none shadow-md" title="Añadir Producto">
+                                        +
+                                    </button>
+                                </h3>
+            
+                                <form id="add-product-form" class="space-y-3 p-4 border rounded-lg bg-gray-50 mb-4 hidden">
+                                     <p class="text-sm font-medium">Añadir y Guardar Producto al Catálogo:</p>
+                                    <div class="grid grid-cols-6 gap-3">
+                                        <div class="col-span-1">
+                                             <label for="product-emoji" class="block text-xs font-medium">Emoji</label>
+                                             <input type="text" id="product-emoji" maxlength="2" required placeholder="❔"
+                                                   class="mt-1 block w-full px-1 py-1 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                                        </div>
+                                        <div class="col-span-3">
+                                             <label for="product-name" class="block text-xs font-medium">Nombre</label>
+                                             <input type="text" id="product-name" required placeholder="Ej: Café Latte"
+                                                   class="mt-1 block w-full px-3 py-1 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                                        </div>
+                                        <div class="col-span-2">
+                                             <label for="product-price" class="block text-xs font-medium">Precio ($)</label>
+                                             <input type="number" id="product-price" required min="0.01" step="0.01" placeholder="3.99"
+                                                   class="mt-1 block w-full px-3 py-1 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                                        </div>
+                            <div class="col-span-2">
+                                 <label for="product-cost" class="block text-xs font-medium">Costo ($)</label>
+                                 <input type="number" id="product-cost" required min="0" step="0.01" placeholder="1.00"
+                                     class="mt-1 block w-full px-3 py-1 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                            </div>
+                                    </div>
+                                    <button type="submit" class="w-full py-2 px-4 rounded-full text-sm font-semibold text-white btn-primary">
+                                        Añadir y Guardar
+                                    </button>
+                                </form>
+            
+                                <div id="product-list" class="grid grid-cols-2 lg:grid-cols-3 gap-3 overflow-y-auto flex-grow pr-1">
+                                    <p class="col-span-3 text-center text-gray-500" id="empty-catalog-message">Cargando catálogo o vacío. Use el botón (+) para añadir.</p>
+                                </div>
+                            </div>
+    
+                            <div id="payment-method-view" class="hidden flex-grow flex flex-col justify-between">
+                                <div class="p-0 text-center">
+                                    <h2 class="text-2xl font-bold mb-2">
+                                        Monto a Pagar: <span id="display-charge-amount-payment-method" class="text-hug-danger">$0.00</span>
+                                    </h2>
+                                    <p class="text-lg font-medium mb-4">Paso 2: Seleccionar Método de Pago</p>
+                                    
+                                    <div class="mb-6 text-left">
+                                        <label for="transaction-description" class="block text-sm font-medium text-gray-700">Descripción de la Transacción (Opcional)</label>
+                                        <input type="text" id="transaction-description" placeholder="Ej: Venta de café y postre"
+                                               class="mt-1 block w-full px-3 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                                    </div>
+                                    
+                                    <form id="payment-options-form" class="space-y-4">
+                                        
+                                        <input type="radio" id="option-hug-bank" name="payment-option" value="hug-bank" class="radio-option">
+                                        <label for="option-hug-bank" class="radio-label bg-white hover:bg-gray-50 flex justify-between items-center">
+                                            <span>1. Pagar con HUG-Bank!</span>
+                                            <span class="text-2xl text-blue-500">💳</span>
+                                        </label>
+    
+                                        <input type="radio" id="option-cash" name="payment-option" value="cash" class="radio-option">
+                                        <label for="option-cash" class="radio-label bg-white hover:bg-gray-50 flex justify-between items-center">
+                                            <span>2. Pagar con Efectivo</span>
+                                            <span class="text-2xl text-green-500">💵</span>
+                                        </label>
+            
+                                        </form>
+                                </div>
+                                <div class="mt-auto">
+                                    <button id="cancel-payment-selection-btn" class="w-full mt-6 py-3 px-4 rounded-full text-lg font-semibold btn-danger">
+                                        Cancelar Transacción
+                                    </button>
+                                </div>
+                            </div>
+    
+                            <div id="customer-login-view" class="hidden flex-grow flex flex-col justify-center">
+                                <div class="max-w-md mx-auto w-full">
+                                    <h2 class="text-2xl font-bold mb-2 text-center">
+                                        Monto a Pagar: <span id="display-charge-amount-login" class="text-hug-danger">$0.00</span>
+                                    </h2>
+                                    <p class="text-center text-lg font-medium mb-6">Paso 3: Cliente debe Iniciar Sesión (HUG Bank)</p>
+                
+                                    <form id="customer-login-form" class="space-y-4">
+                                        <div>
+                                            <label for="customer-email" class="block text-sm font-medium">Correo Electrónico del Cliente</label>
+                                            <input type="email" id="customer-email" required placeholder="tu.correo@ejemplo.com"
+                                                   class="mt-1 block w-full px-3 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                                        </div>
+                                        <div>
+                                            <label for="customer-password" class="block text-sm font-medium">Contraseña del Cliente</label>
+                                            <input type="password" id="customer-password" required placeholder="********"
+                                                   class="mt-1 block w-full px-3 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                                        </div>
+                                        <button type="submit" class="w-full py-3 px-4 rounded-full text-lg font-semibold text-white btn-primary">
+                                            Continuar al Pago
+                                        </button>
+                                    </form>
+                                    <button id="cancel-login-btn" class="w-full mt-4 py-3 px-4 rounded-full text-lg font-semibold btn-danger">
+                                        Cancelar Transacción
+                                    </button>
+                                </div>
+                            </div>
+    
+                            <div id="payment-confirmation-view" class="hidden flex-grow flex flex-col justify-center text-center">
+                                 <div class="max-w-md mx-auto w-full">
+                                    <h2 class="text-3xl font-extrabold mb-4 text-hug-header">Confirmación de Pago</h2>
+                
+                                     <div class="bg-blue-50 p-6 rounded-xl border border-blue-200 mb-6">
+                                        <p class="text-sm text-blue-600">Total a Cobrar</p>
+                                        <h3 class="text-5xl font-extrabold mt-1" id="display-charge-amount-confirm">$0.00</h3>
+                                        <p class="text-sm text-blue-600 mt-2">Tu Saldo Actual: <span id="display-current-balance" class="font-bold">$0.00</span></p>
+                                     </div>
+                                     
+                                     <p class="mb-6 text-lg">Paso 4: Aprobar el Pago por <span id="customer-name-display" class="font-bold">Cliente</span></p>
+                
+                                    <button id="confirm-payment-btn" class="w-full py-3 px-4 rounded-full text-lg font-semibold text-white btn-primary">
+                                        Aprobar Pago
+                                    </button>
+                                    <button id="cancel-payment-btn" class="w-full mt-4 py-3 px-4 rounded-full text-lg font-semibold btn-danger">
+                                        Cancelar Transacción
+                                    </button>
+                                 </div>
+                            </div>
+    
+                            <div id="transaction-complete-view" class="hidden flex-grow flex flex-col justify-center text-center">
+                                 <div class="max-w-md mx-auto w-full">
+                                    <div id="complete-icon" class="text-6xl mb-4"></div>
+                                    <h2 id="complete-title" class="text-3xl font-bold mb-2"></h2>
+                                    <p id="complete-message" class="mb-8 text-gray-600"></p>
+                                    
+                                    <h3 class="text-xl font-bold mb-4">Listo para el Siguiente Cliente</h3>
+                
+                                    <button id="new-transaction-btn" class="w-full py-3 px-4 rounded-full text-lg font-semibold text-white btn-primary">
+                                        Iniciar Nueva Transacción
+                                    </button>
+                                 </div>
+                            </div>
+                            
+                            <div id="statistics-view" class="hidden flex-grow flex flex-col">
+                                 <h3 class="text-xl font-semibold mb-3">Estadísticas de Ventas</h3>
+                                 
+                                 <div class="mb-4 flex items-center space-x-3">
+                                    <label for="stats-period-selector" class="text-sm font-medium">Periodo:</label>
+                                    <select id="stats-period-selector" class="px-3 py-1 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                                        <option value="daily">Día Actual</option>
+                                        <option value="monthly">Mes Actual</option>
+                                        <option value="yearly">Año Actual</option>
+                                        <option value="total" selected>Total</option>
+                                    </select>
+                                    <button id="refresh-stats-btn" class="py-1 px-3 rounded-full text-sm font-semibold text-white bg-green-500 hover:bg-green-700">
+                                        <img src="../scr/reload.svg" alt="Export Icon" class="inline h-5 w-5 items-center">
+                                    </button>
+                                    <button id="back-to-pos-btn" class="p-1 rounded-full text-sm font-semibold text-white bg-red-500 hover:bg-red-700">
+                                        <img src="../scr/business.svg" alt="Export Icon" class="inline h-5 w-5 items-center">
+                                    </button>
+                                 </div>
+                                 
+                                 <div class="grid grid-cols-2 gap-4 mb-4">
+                                    <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                                         <p class="text-sm font-medium text-blue-600">Ingreso Total</p>
+                                         <h4 id="total-revenue-display" class="text-3xl font-bold text-blue-800">$0.00</h4>
+                                    </div>
+                              <div class="bg-green-50 p-4 rounded-lg border border-green-200">
+                                  <p class="text-sm font-medium text-green-600">Productos Vendidos</p>
+                                  <h4 id="total-items-display" class="text-3xl font-bold text-green-800">0</h4>
+                              </div>
+                              <div class="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
+                                  <p class="text-sm font-medium text-yellow-700">Costo Total</p>
+                                  <h4 id="total-cost-display" class="text-3xl font-bold text-yellow-800">$0.00</h4>
+                              </div>
+                              <div class="bg-indigo-50 p-4 rounded-lg border border-indigo-200">
+                                  <p class="text-sm font-medium text-indigo-600">Ganancia Estimada</p>
+                                  <h4 id="total-profit-display" class="text-3xl font-bold text-indigo-800">$0.00</h4>
+                              </div>
+                                 </div>
+                                 
+                                 <h4 class="text-lg font-semibold mb-2 mt-2 border-t pt-4">Productos Más Vendidos</h4>
+                                 
+                                 <div id="top-products-list" class="space-y-3 overflow-y-auto flex-grow pr-1">
+                                    <p class="text-center text-gray-500" id="empty-stats-message">Seleccione un periodo y actualice.</p>
+                                 </div>
+    
+                            </div>
+                            </div>
+                    </div>
+                    <div class="md:col-span-2 p-4 md:p-6 flex flex-col border-t md:border-t-0">
+                        <h3 class="text-xl font-semibold mb-3">Total y Carrito</h3>
+                        
+                        <div id="cart-items" class="space-y-2 max-h-60 overflow-y-auto p-2 border rounded-lg bg-white flex-grow mb-4">
+                            <p class="text-gray-500 text-center" id="empty-cart-message">Seleccione productos en la izquierda.</p>
+                        </div>
+                        
+                        <div class="flex justify-between items-center font-bold text-2xl pt-4 border-t mt-auto">
+                            <span>Total:</span>
+                            <span id="display-total-amount" class="text-hug-danger">$0.00</span>
+                        </div>
+                        
+                        <div class="mt-4 space-y-3">
+                            <button id="checkout-btn" class="w-full py-3 px-4 rounded-full text-lg font-semibold text-white btn-primary" disabled>
+                                Proceder al Pago
+                            </button>
+                            <button id="clear-cart-btn" class="w-full py-2 px-4 rounded-full text-sm font-semibold text-white bg-gray-400 hover:bg-gray-600">
+                                Vaciar Carrito
+                            </button>
+                        </div>
+                    </div>
+                    </div>
+            </div>
+    
+            <div id="message-box" class="mt-4 p-4 rounded-lg text-sm hidden" role="alert"></div>
+
+    <script type="module" link="module" src="script.js"></script>
+    <!-- jsQR for client-side QR decoding -->
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+        <!-- button-animations-script-start -->
+        <script>
+        (function(){
+            function createRipple(e){
+                const btn = e.currentTarget;
+                const rect = btn.getBoundingClientRect();
+                const ripple = document.createElement('span');
+                ripple.className = 'ripple';
+                const size = Math.max(rect.width, rect.height);
+                ripple.style.width = ripple.style.height = size + 'px';
+                ripple.style.left = (e.clientX - rect.left - size/2) + 'px';
+                ripple.style.top = (e.clientY - rect.top - size/2) + 'px';
+                btn.appendChild(ripple);
+                setTimeout(()=> ripple.remove(), 700);
+            }
+            const buttons = Array.from(document.querySelectorAll('button, [role="button"], .btn-primary, .btn-secondary'));
+            buttons.forEach(b=>{ b.classList.add('btn-ripple'); b.addEventListener('click', createRipple); });
+
+            // Resize animation: detectar aumento de altura y aplicar animación suave
+            let lastInnerHeight = window.innerHeight;
+            let resizeTimer = null;
+            const THRESHOLD = 20;
+            window.addEventListener('resize', function(){
+                const newH = window.innerHeight;
+                if (newH > lastInnerHeight + THRESHOLD) {
+                    const app = document.getElementById('app');
+                    if (app) {
+                        app.classList.remove('viewport-expand-anim'); void app.offsetWidth; app.classList.add('viewport-expand-anim');
+                        setTimeout(()=> app.classList.remove('viewport-expand-anim'), 700);
+                    }
+                }
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(()=> { lastInnerHeight = window.innerHeight; }, 240);
+            });
+        })();
+        </script>
+        <!-- button-animations-script-end -->
+</body>
+</html>

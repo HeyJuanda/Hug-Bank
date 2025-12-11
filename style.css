@@ -1,0 +1,266 @@
+/* [Se mantiene todo el bloque de estilos CSS] */
+        :root {
+            --hug-primary: #007bff;
+            --hug-secondary: #ffffff;
+            --hug-text-color: #1f2937;
+            --hug-header: #3b82f6;
+        }
+
+        body {
+            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacs, sans-serif;
+            background-color: var(--hug-secondary);
+            color: var(--hug-text-color);
+            max-width: 100%;
+            max-height: 60%;
+        }
+
+        .rounded-full {
+            border-radius: 50%; /* Asegura que sea 100% circular */
+            width: 2.5rem;   /* Por ejemplo, 40px */
+            height: 2.5rem;  /* Debe ser igual al ancho */
+            display: flex; /* Para centrar el ícono */
+            align-items: center; /* Centrado vertical */
+            justify-content: center; /* Centrado horizontal */
+            padding: 0; /* Eliminar padding para que el tamaño sea preciso */
+        }
+        
+        /* Estilos para la animación del saldo */
+        .balance-update {
+            transition: all 0.5s ease-in-out;
+        }
+        
+        .balance-increase {
+            color: #22c55e !important; /* Verde para incrementos */
+            transform: scale(1.1);
+        }
+        
+        .balance-decrease {
+            color: #ef4444 !important; /* Rojo para decrementos */
+            transform: scale(1.1);
+        }
+        .bg-card {
+            background-color: #ffffff;
+            border-radius: 1rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        .btn-info {
+            background-color: #d8dfe574;
+            transition: background-color 0.2s ease-in-out;
+        }
+        .btn-info:hover {
+            background-color: #b8c2ca68;
+            transition: background-color 0.2s ease-in-out;
+        }
+        .btn-primary {
+            background-color: #1994ff;
+            transition: background-color 0.2s ease-in-out;
+        }
+        .btn-primary:hover {
+            background-color: #2563eb; /* Blue-600 */
+        }
+        .btn-secondary {
+            background-color: #e5e7eb; /* Gray-200 */
+            color: var(--hug-text-color);
+            transition: background-color 0.2s ease-in-out;
+        }
+        .btn-secondary:hover {
+            background-color: #d1d5db;
+        }
+        .transaction-item:hover {
+            background-color: #f7f9fb;
+        }
+        .header-bar {
+            background-color: var(--hug-header);
+            color: white;
+            padding: 1rem;
+            border-radius: 0.75rem 0.75rem 0 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        @media (min-width: 640px) {
+            .header-bar {
+                padding: 1rem 1.5rem;
+            }
+        }
+        /* Estilos para el modal/overlay */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 0.5rem;
+            width: 80%;
+            max-width: 400px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .close-btn {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close-btn:hover,
+        .close-btn:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .star-rating label {
+            font-size: 2rem;
+            color: #ccc;
+            cursor: pointer;
+        }
+        .star-rating input:checked ~ label {
+            color: #ffc107;
+        }
+        .star-rating input {
+            display: none;
+        }
+        .star-rating {
+            direction: rtl;
+            display: inline-block;
+        }
+        .star-rating label:hover,
+        .star-rating label:hover ~ label {
+            color: #ffc107;
+        }
+
+        /* Modal de Confirmación Elegante */
+        .confirm-modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.2s ease-in-out;
+        }
+
+        .confirm-modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .confirm-modal-content {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            max-width: 450px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            animation: slideUp 0.3s ease-out;
+        }
+
+        .confirm-modal-icon {
+            width: 4rem;
+            height: 4rem;
+            margin: 0 auto 1rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .confirm-modal-icon.warning {
+            background-color: #fef3c7;
+            color: #f59e0b;
+        }
+
+        .confirm-modal-icon.danger {
+            background-color: #fee2e2;
+            color: #ef4444;
+        }
+
+        .confirm-modal-icon.info {
+            background-color: #dbeafe;
+            color: #3b82f6;
+        }
+
+        .confirm-modal-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #1f2937;
+            text-align: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .confirm-modal-message {
+            font-size: 0.95rem;
+            color: #6b7280;
+            text-align: center;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .confirm-modal-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .confirm-modal-btn {
+            flex: 1;
+            min-width: 120px;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.75rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .confirm-modal-btn-confirm {
+            background-color: #1994ff;
+            color: white;
+        }
+
+        .confirm-modal-btn-confirm:hover {
+            background-color: #2563eb;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(31, 41, 55, 0.15);
+        }
+
+        .confirm-modal-btn-cancel {
+            background-color: #e5e7eb;
+            color: #1f2937;
+        }
+
+        .confirm-modal-btn-cancel:hover {
+            background-color: #d1d5db;
+            transform: translateY(-2px);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
